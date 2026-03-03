@@ -1,40 +1,45 @@
 <!DOCTYPE html>
 <html lang="es">
-<head> 
+<head>
     <meta charset="UTF-8">
-    <title>Lista de Tareas</title>
-    <link rel="stylesheet" href="style.css"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimal Task App</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="app-container">
+        <header class="header">
+            <h1>Mis Tareas</h1>
+            <p>Martes, 3 de Marzo</p>
+        </header>
 
-<header>
-    <h1>Mi Gestor de Tareas</h1>
-</header>
+        <aside class="sidebar">
+            <nav>
+                <button class="active">Todas</button>
+                <button>Urgentes</button>
+                <button>Proyectos</button>
+            </nav>
+        </aside>
 
-<aside>
-    <h2>Categorías</h2> 
-    <ul>
-        <li>Trabajo</li>
-        <li>Estudio</li>
-        <li>Personal</li>
-    </ul> 
-</aside>
+        <main class="main-content">
+            <section class="task-list">
+                <article class="task-card">
+                    <div class="task-info">
+                        <h3>Diseño UI Minimalista</h3>
+                        <span class="category">Diseño</span>
+                    </div>
+                    <span class="priority high">Alta</span>
+                </article>
 
-<main>
-    <section class="task-list"> 
-        <article class="task">
-            <span class="task-title">Terminar práctica HTML</span>
-            <span class="task-category">Estudio</span>
-            <span class="task-priority high">Alta</span>
-        </article>
-
-        <article class="task">
-            <span class="task-title">Entrenar</span>
-            <span class="task-category">Personal</span>
-            <span class="task-priority medium">Media</span> 
-        </article>
-    </section>
-</main>
-
+                <article class="task-card">
+                    <div class="task-info">
+                        <h3>Deploy en Vercel</h3>
+                        <span class="category">DevOps</span>
+                    </div>
+                    <span class="priority medium">Media</span>
+                </article>
+            </section>
+        </main>
+    </div>
 </body>
 </html>
