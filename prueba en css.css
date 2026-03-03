@@ -1,0 +1,105 @@
+:root {
+    --color-bg: #f4f6f9;
+    --color-primary: #2c3e50;
+    --color-accent: #3498db;
+    --color-high: #e74c3c;
+    --color-medium: #f39c12;
+    --color-low: #2ecc71;
+
+    --font-main: 'Segoe UI', sans-serif;
+
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-main);
+    background-color: var(--color-bg);
+}
+
+header {
+    background: var(--color-primary);
+    color: white;
+    padding: var(--spacing-md);    
+}
+
+aside {
+    background: white;
+    padding: var(--spacing-md);
+    width: 250px;
+}
+
+main {
+    flex: 1;
+    padding: var(--spacing-md);
+}
+
+.task-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.task {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: var(--spacing-md);
+    border-radius: 8px;
+}
+
+.task-title {
+    font-weight: bold;
+}
+
+.task-category {
+    color: var(--color-accent);
+}
+
+.task-priority {
+    padding: 4px 8px;
+    border-radius: 4px;
+    color: white;
+}
+
+.high {
+    background-color: var(--color-high);
+}
+
+.medium {
+    background-color: var(--color-medium);
+}
+
+.low {
+    background-color: var(--color-low);
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+@media (min-width: 768px) {
+    body {
+        flex-direction: row;
+    }
+
+    header {
+        position: fixed;
+        top: 0;
+        width: 100%;
+    }
+}
+
+@media (max-width: 767px) {
+    body {
+        flex-direction: column;
+    }
+
+    aside {
+        width: 100%;
+    }
+}
