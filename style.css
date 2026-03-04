@@ -1,88 +1,283 @@
 :root {
-    --primary: #6366f1;
-    --bg: #f8fafc;
-    --card: #ffffff;
-    --text: #1e293b;
+    --primary: #6c5ce7;
+    --primary-dim: #a29bfe;
+    --accent: #00cec9;
+    --bg: #0f172a;
+    --glass: rgba(30, 41, 59, 0.7);
+    --border-glass: rgba(255, 255, 255, 0.08);
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+    --delete: #ff7675;
+    --success: #00b894;
+    --ease: cubic-bezier(0.23, 1, 0.32, 1); /* Curva de animación suave */
 }
 
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
 body {
-    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-family: 'Poppins', system-ui, -apple-system, sans-serif;
     background-color: var(--bg);
-    color: var(--text);
+    color: var(--text-main);
     display: flex;
     justify-content: center;
-    padding: 2rem;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    overflow: hidden; /* El glow de fondo puede salir */
+}
+
+/* Efecto Glow de fondo (Interactividad visual pasiva) */
+.bg-glow {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: var(--primary);
+    filter: blur(150px);
+    border-radius: 50%;
+    opacity: 0.2;
+    z-index: -1;
+    animation: glowPulse 10s infinite alternate var(--ease);
+}
+
+@keyframes glowPulse {
+    0% { transform: translate(-50%, -50%) scale(1); opacity: 0.2; }
+    100% { transform: translate(50%, 50%) scale(1.5); opacity: 0.3; }
+}
+
+/* Contenedor Glassmorphism */
+.glass {
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-glass);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
 .app-container {
     width: 100%;
-    max-width: 400px;
-    background: var(--card);
+    max-width: 480px;
     padding: 2rem;
-    border-radius: 20px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    border-radius: 28px;
+    transition: all 0.5s var(--ease);
 }
 
-header h1 { margin: 0; font-size: 1.5rem; }
-header span { color: var(--primary); }
+/* Header Interactividad (Estado de ánimo) */
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
+h1 { font-size: 2rem; font-weight: 800; letter-spacing: -1px; }
+.accent { color: var(--accent); text-shadow: 0 0 10px var(--accent); }
+.subtitle { color: var(--text-muted); font-size: 0.9rem; margin-top: 4px; }
+
+#mood-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+.mood-neutral { background: var(--text-muted); box-shadow: 0 0 10px var(--text-muted); }
+.mood-happy { background: var(--success); box-shadow: 0 0 15px var(--success); transform: scale(1.1); }
+.mood-busy { background: #fab1a0; box-shadow: 0 0 10px #fab1a0; }
+
+/* Formulario Neumórfico-modificado */
 form {
     display: flex;
-    gap: 10px;
-    margin: 1.5rem 0;
+    gap: 12px;
+    margin: 2rem 0;
+}
+
+.input-group {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 15px;
+    color: var(--primary-dim);
+    transition: all 0.3s ease;
 }
 
 input {
-    flex: 1;
-    padding: 12px;
-    border: 2px solid #e2e8f0;
-    border-radius: 12px;
-    outline: none;
-    transition: border-color 0.3s;
+    width: 100%;
+    padding: 16px 16px 16px 45px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 2px solid transparent;
+    border-radius: 16px;
+    color: var(--text-main);
+    font-size: 1rem;
+    transition: all 0.3s var(--ease);
 }
 
-input:focus { border-color: var(--primary); }
+input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 15px rgba(108, 92, 231, 0.3);
+}
+
+input:focus + .input-icon {
+    color: var(--accent);
+    transform: scale(1.1);
+}
 
 button#add-btn {
     background: var(--primary);
     color: white;
     border: none;
-    padding: 0 15px;
-    border-radius: 12px;
+    width: 55px;
+    border-radius: 16px;
     cursor: pointer;
-    font-size: 1.5rem;
-    transition: transform 0.2s;
+    font-size: 1.2rem;
+    transition: all 0.3s var(--ease);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-button#add-btn:hover { transform: scale(1.05); }
+button#add-btn:hover {
+    background: #7d6efd;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4);
+}
 
-ul { list-style: none; padding: 0; }
+button#add-btn:active { transform: translateY(1px); }
 
-/* Animación de entrada de tareas */
+/* Stats Bar */
+.stats-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    padding: 0 5px;
+}
+
+.text-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: color 0.3s ease;
+}
+.text-btn:hover { color: var(--delete); }
+.hide { opacity: 0; pointer-events: none; }
+
+/* Lista de Tareas y Animaciones (Crucial para interactividad) */
+ul { list-style: none; max-height: 400px; overflow-y: auto; padding-right: 5px; }
+
+/* Scrollbar estilizada */
+ul::-webkit-scrollbar { width: 5px; }
+ul::-webkit-scrollbar-thumb { background: var(--border-glass); border-radius: 5px; }
+
 .task-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px;
-    background: #f1f5f9;
-    margin-bottom: 8px;
-    border-radius: 10px;
-    animation: slideIn 0.3s ease-out forwards;
-}
-
-@keyframes slideIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.delete-btn {
-    background: #ff4757;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 6px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    margin-bottom: 10px;
+    border-radius: 14px;
+    border: 1px solid transparent;
+    transition: all 0.3s var(--ease);
     cursor: pointer;
+    
+    /* Animación de entrada por defecto */
+    animation: taskEnter 0.4s var(--ease) forwards;
+}
+
+.task-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.05);
+    transform: translateX(3px);
+}
+
+/* Estado completado (Interactividad) */
+.task-item.completed span {
+    text-decoration: line-through;
+    color: var(--text-muted);
     opacity: 0.7;
 }
+.task-item.completed {
+    border-color: rgba(0, 184, 148, 0.2);
+    background: rgba(0, 184, 148, 0.03);
+}
 
-.delete-btn:hover { opacity: 1; }
+.task-text {
+    flex: 1;
+    margin-right: 15px;
+    word-break: break-word;
+}
+
+.action-btns {
+    display: flex;
+    gap: 8px;
+    opacity: 0; /* Ocultos por defecto, aparecen en hover */
+    transition: opacity 0.3s ease;
+}
+
+.task-item:hover .action-btns { opacity: 1; }
+
+.icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+.check-btn { color: var(--text-muted); }
+.check-btn:hover { color: var(--success); transform: scale(1.2); }
+.task-item.completed .check-btn { color: var(--success); }
+
+.delete-btn { color: var(--text-muted); }
+.delete-btn:hover { color: var(--delete); transform: scale(1.2) rotate(10deg); }
+
+
+/* Keyframes Animaciones */
+@keyframes taskEnter {
+    from { opacity: 0; transform: translateY(20px) scale(0.9); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes taskExit {
+    to { opacity: 0; transform: translateX(100px) scale(0.8); }
+}
+
+/* Clase que se aplica por JS antes de borrar */
+.fall-out {
+    animation: taskExit 0.4s var(--ease) forwards;
+    pointer-events: none;
+}
+
+/* Toast Notificaciones */
+#toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.toast {
+    background: var(--glass);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 10px;
+    margin-top: 10px;
+    border-left: 4px solid var(--primary);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    backdrop-filter: blur(10px);
+    animation: toastIn 0.3s ease forwards, toastOut 0.3s ease 2.7s forwards;
+}
+.toast.success { border-left-color: var(--success); }
+.toast.delete { border-left-color: var(--delete); }
+
+@keyframes toastIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes toastOut { to { transform: translateX(100%); opacity: 0; } }

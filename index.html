@@ -3,28 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TaskFlow Pro</title>
+    <title>TaskFlow Pro | Tu Espacio Productivo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="app-container">
+    <div class="bg-glow"></div>
+
+    <div class="app-container glass">
         <header>
-            <h1>TaskFlow<span>.js</span></h1>
-            <p id="date-display"></p>
+            <div class="header-top">
+                <h1>Task<span class="accent">Flow</span></h1>
+                <div id="mood-icon" class="mood-neutral"></div> </div>
+            <p class="subtitle">Gestiona tu día con fluidez</p>
         </header>
 
-        <form id="task-form">
-            <input type="text" id="task-input" placeholder="¿Qué planes tienes para hoy?" required>
-            <button type="submit" id="add-btn">+</button>
+        <form id="task-form" class="neumorphic-form">
+            <div class="input-group">
+                <i class="fas fa-plus-circle input-icon"></i>
+                <input type="text" id="task-input" placeholder="Añadir una nueva tarea mágica..." required maxlength="50">
+            </div>
+            <button type="submit" id="add-btn">
+                <i class="fas fa-arrow-right"></i>
+            </button>
         </form>
 
-        <div class="stats">
-            <span id="task-count">0 tareas pendientes</span>
+        <div class="stats-bar">
+            <span id="task-count">0 tareas restantes</span>
+            <button id="clear-all-btn" class="text-btn hide"><i class="fas fa-broom"></i> Limpiar todo</button>
         </div>
 
         <ul id="task-list">
             </ul>
     </div>
+
+    <div id="toast-container"></div>
+
+    <audio id="sound-add" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" preload="auto"></audio>
+    <audio id="sound-delete" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3" preload="auto"></audio>
+
     <script src="app.js"></script>
 </body>
 </html>
