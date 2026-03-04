@@ -9,47 +9,50 @@ let tasks = [];
 
 // [REQUISITO 5]: Cargar las tareas guardadas al iniciar la aplicación
 document.addEventListener('DOMContentLoaded', () => { 
-    const storedTasks = loscalStorage.getItem('tasks');
+    // CORREGIDO: localStorage (sin la 's' extra)
+    const storedTasks = localStorage.getItem('tasks');
     if (storedTasks) {
-        tasks = JSON.parse(storedTasks); // Covertir de texto JSON a array de JS
+        tasks = JSON.parse(storedTasks); 
         renderTasks();
     }
 });
 
 // [REQUISITO 1 & 2]: Vincula el formulario y añade tareas
 taskForm.addEventListener('submit', (e) => { 
-   e.preventDefault(); // Evita que la página se recargue al hacer submit
+   e.preventDefault(); 
 
-   const taskText = taskInput.ariaValueMax.trim();
+   // CORREGIDO: usamos .value para obtener el texto del input
+   const taskText = taskInput.value.trim();
 
    if (taskText !== '') {
-       // Crear un objeto tarea con un ID único 
        const newTask = {
         id: Date.now(),
         text: taskText
        };
        
        tasks.push(newTask);
-       saveToLocalStorage(); // [REQUISITO 4]
+       saveToLocalStorage(); 
        renderTasks();
 
-       taskInput.value = ''; // Limpiar el input
+       taskInput.value = ''; 
    }
 });
 
-// Función para renderizar el DOM (Dibuja la lista en pantalla)
+// Función para renderizar el DOM
 function renderTasks() {
-    taskList.innerHTML = ''; // Limpiar la lista actual antes de re-dibujar
+    taskList.innerHTML = ''; 
 
     tasks.forEach(task => {
         const li = document.createElement('li');
         li.dataset.id = task.id;
 
-        const span = document.createElement('span')
+        const span = document.createElement('span');
+        // AÑADIDO: Asignamos el texto al span para que sea visible
+        span.textContent = task.text; 
         
-        // [REQUISITO 3]: Añade un botón de eliminación a cada tarea
-        const deleteBtn = document.createElement('button')
-        deleteBtn.textContent = 'Borrar'
+        // [REQUISITO 3]: Botón de eliminación
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Borrar';
         deleteBtn.classList.add('delete-btn');
 
         deleteBtn.addEventListener('click', () => {
@@ -61,18 +64,16 @@ function renderTasks() {
         taskList.appendChild(li);
     });
 
-    // Si hay texto en el buscador, lo aplicamos al re-dibujar
-    fliterTasks(searchInput.value);
+    // CORREGIDO: nombre de la función filterTasks
+    filterTasks(searchInput.value);
 }
 
-// Función para borrar del array y actualizar el DOM
 function deleteTask(id) {
     tasks = tasks.filter(task => task.id !== id);
-    saveToLocalStorage(); // [REQUISITO 4]
+    saveToLocalStorage(); 
     renderTasks();
 }
 
-// [REQUISITO 4]: Guarda el array de tareas en LocalStorage usando JSON.stringify
 function saveToLocalStorage() {
     localStorage.setItem('tasks', JSON.stringify(tasks));
 }
@@ -81,20 +82,24 @@ function saveToLocalStorage() {
 // [BONUS]: Filtro de búsqueda
 // ==========================================
 searchInput.addEventListener('input', (e) => {
-    fliterTasks(e.target.value);
+    // CORREGIDO: nombre de la función filterTasks
+    filterTasks(e.target.value);
 });
 
-function fliterTasks(searchTerm) {
+// CORREGIDO: nombre de la función filterTasks
+function filterTasks(searchTerm) {
     const term = searchTerm.toLowerCase();
     const items = taskList.querySelectorAll('li');
 
     items.forEach(item => {
-        const text = item.querySelector('span').textContent.toLowerCase();
-        // Si el texto de la tarea incluye lo que buscamos, lo mostramos, si no, añadimos la clase .hidden
-        if (text.includes(term)) {
-            item.classList.remove('hidden');
-        } else {
-            item.classList.add('hidden');
-        }    
+        const span = item.querySelector('span');
+        if (span) {
+            const text = span.textContent.toLowerCase();
+            if (text.includes(term)) {
+                item.classList.remove('hidden');
+            } else {
+                item.classList.add('hidden');
+            }
+        }
     });
 }
