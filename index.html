@@ -3,43 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minimal Task App</title>
+    <title>Taskflow - Gestor de Tareas</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="app-container">
         <header class="header">
-            <h1>Mis Tareas</h1>
-            <p>Martes, 3 de Marzo</p>
+            <h1>Taskflow</h1>
+            <input type="text" id="search-input" placeholder="🔍 Buscar tarea...">
         </header>
 
-        <aside class="sidebar">
-            <nav>
-                <button class="active">Todas</button>
-                <button>Urgentes</button>
-                <button>Proyectos</button>
-            </nav>
-        </aside>
-
-        <main class="main-content">
-            <section class="task-list">
-                <article class="task-card">
-                    <div class="task-info">
-                        <h3>Diseño UI Minimalista</h3>
-                        <span class="category">Diseño</span>
-                    </div>
-                    <span class="priority high">Alta</span>
-                </article>
-
-                <article class="task-card">
-                    <div class="task-info">
-                        <h3>Deploy en Vercel</h3>
-                        <span class="category">DevOps</span>
-                    </div>
-                    <span class="priority medium">Media</span>
-                </article>
-            </section>
-        </main>
-    </div>
+        <form id="task-form">
+            <input type="text" id="task-input" placeholder="Añadir nueva tarea..." required autocomplete="off">
+            <button type="submit">Añadir</button>
+        </form>
+         <ul id="task-list"></ul>   
+    </div>    
+    <script src="app.js"></script>   
 </body>
 </html>
