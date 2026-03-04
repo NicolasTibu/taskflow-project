@@ -86,7 +86,7 @@ h1 { font-size: 2rem; font-weight: 800; letter-spacing: -1px; }
 form {
     display: flex;
     gap: 12px;
-    margin: 2rem 0;
+    margin: 2rem 0 1rem 0; /* Ajustado margen inferior para el buscador */
 }
 
 .input-group {
@@ -148,6 +148,45 @@ button#add-btn:hover {
 
 button#add-btn:active { transform: translateY(1px); }
 
+/* --- SECCIÓN BUSCADOR (NUEVO BONUS IMPLEMENTADO) --- */
+.search-container {
+    position: relative;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    animation: taskEnter 0.5s var(--ease) 0.2s backwards; /* Aparece un poco después que el header */
+}
+
+.search-icon {
+    position: absolute;
+    left: 15px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    pointer-events: none;
+}
+
+#search-input {
+    width: 100%;
+    padding: 12px 15px 12px 40px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-glass);
+    border-radius: 12px;
+    color: var(--text-main);
+    font-size: 0.9rem;
+    transition: all 0.3s var(--ease);
+}
+
+#search-input:focus {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--accent);
+    outline: none;
+}
+
+/* Clase crítica para el filtrado dinámico */
+.filtered {
+    display: none !important;
+}
+
 /* Stats Bar */
 .stats-bar {
     display: flex;
@@ -170,10 +209,9 @@ button#add-btn:active { transform: translateY(1px); }
 .text-btn:hover { color: var(--delete); }
 .hide { opacity: 0; pointer-events: none; }
 
-/* Lista de Tareas y Animaciones (Crucial para interactividad) */
+/* Lista de Tareas y Animaciones */
 ul { list-style: none; max-height: 400px; overflow-y: auto; padding-right: 5px; }
 
-/* Scrollbar estilizada */
 ul::-webkit-scrollbar { width: 5px; }
 ul::-webkit-scrollbar-thumb { background: var(--border-glass); border-radius: 5px; }
 
@@ -188,8 +226,6 @@ ul::-webkit-scrollbar-thumb { background: var(--border-glass); border-radius: 5p
     border: 1px solid transparent;
     transition: all 0.3s var(--ease);
     cursor: pointer;
-    
-    /* Animación de entrada por defecto */
     animation: taskEnter 0.4s var(--ease) forwards;
 }
 
@@ -199,7 +235,6 @@ ul::-webkit-scrollbar-thumb { background: var(--border-glass); border-radius: 5p
     transform: translateX(3px);
 }
 
-/* Estado completado (Interactividad) */
 .task-item.completed span {
     text-decoration: line-through;
     color: var(--text-muted);
@@ -219,7 +254,7 @@ ul::-webkit-scrollbar-thumb { background: var(--border-glass); border-radius: 5p
 .action-btns {
     display: flex;
     gap: 8px;
-    opacity: 0; /* Ocultos por defecto, aparecen en hover */
+    opacity: 0;
     transition: opacity 0.3s ease;
 }
 
@@ -240,7 +275,6 @@ ul::-webkit-scrollbar-thumb { background: var(--border-glass); border-radius: 5p
 .delete-btn { color: var(--text-muted); }
 .delete-btn:hover { color: var(--delete); transform: scale(1.2) rotate(10deg); }
 
-
 /* Keyframes Animaciones */
 @keyframes taskEnter {
     from { opacity: 0; transform: translateY(20px) scale(0.9); }
@@ -251,7 +285,6 @@ ul::-webkit-scrollbar-thumb { background: var(--border-glass); border-radius: 5p
     to { opacity: 0; transform: translateX(100px) scale(0.8); }
 }
 
-/* Clase que se aplica por JS antes de borrar */
 .fall-out {
     animation: taskExit 0.4s var(--ease) forwards;
     pointer-events: none;

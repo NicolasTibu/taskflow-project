@@ -5,6 +5,7 @@ const taskList = document.getElementById('task-list');
 const taskCount = document.getElementById('task-count');
 const moodIcon = document.getElementById('mood-icon');
 const clearAllBtn = document.getElementById('clear-all-btn');
+const searchInput = document.getElementById('search-input'); // NUEVO: Selección buscador
 
 // Elementos de Sonido
 const sndAdd = document.getElementById('sound-add');
@@ -61,13 +62,12 @@ function showToast(message, type = 'success') {
 
 // --- LÓGICA PRINCIPAL DEL DOM ---
 
-// 5. Renderizado con creación dinámica de nodos (más seguro y permite animaciones)
+// 5. Renderizado con creación dinámica de nodos
 function renderTasks() {
     taskList.innerHTML = ''; // Limpiar vista
 
     if (tasks.length === 0) {
         taskList.innerHTML = `<li class="empty-state"><i class="fas fa-feather"></i><p>Todo limpio. ¡Disfruta tu día!</p></li>`;
-        // Estilo rápido para el estado vacío
         const es = taskList.querySelector('.empty-state');
         Object.assign(es.style, {textAlign:'center', color:'var(--text-muted)', paddingTop:'30px', listStyle:'none'});
         es.querySelector('i').style.fontSize = '2rem';
@@ -75,37 +75,30 @@ function renderTasks() {
     }
 
     tasks.forEach((task, index) => {
-        // Crear elemento LI
         const li = document.createElement('li');
         li.className = `task-item ${task.completed ? 'completed' : ''}`;
-        li.dataset.index = index; // Guardar índice
+        li.dataset.index = index;
 
-        // Crear Texto
         const spanText = document.createElement('span');
         spanText.className = 'task-text';
         spanText.innerText = task.text;
 
-        // Crear Contenedor de Botones
         const divActions = document.createElement('div');
         divActions.className = 'action-btns';
 
-        // Botón Check
         const btnCheck = document.createElement('button');
         btnCheck.className = 'icon-btn check-btn';
         btnCheck.innerHTML = '<i class="fas fa-check"></i>';
         
-        // Botón Eliminar
         const btnDelete = document.createElement('button');
         btnDelete.className = 'icon-btn delete-btn';
         btnDelete.innerHTML = '<i class="fas fa-trash-alt"></i>';
 
-        // Ensamblar
         divActions.appendChild(btnCheck);
         divActions.appendChild(btnDelete);
         li.appendChild(spanText);
         li.appendChild(divActions);
         
-        // Inyectar en UL
         taskList.appendChild(li);
     });
 
@@ -121,9 +114,9 @@ taskForm.addEventListener('submit', (e) => {
     const text = taskInput.value.trim();
     
     if (text) {
-        // Añadir objeto complejo
         tasks.push({ text: text, completed: false });
         taskInput.value = '';
+        searchInput.value = ''; // NUEVO: Limpia búsqueda al añadir
         taskInput.focus();
         
         playSound(sndAdd);
@@ -132,29 +125,23 @@ taskForm.addEventListener('submit', (e) => {
     }
 });
 
-// 7. EVENTO: Delegación de Eventos en la Lista (Check y Delete con Animación)
+// 7. EVENTO: Delegación de Eventos en la Lista
 taskList.addEventListener('click', (e) => {
     const target = e.target;
-    // Encontrar el LI padre más cercano
     const li = target.closest('.task-item');
     if (!li || li.classList.contains('empty-state')) return;
     const index = li.dataset.index;
 
-    // Lógica botón Check
     if (target.closest('.check-btn')) {
         tasks[index].completed = !tasks[index].completed;
         updateUI();
         return;
     }
 
-    // Lógica botón Eliminar con ANIMACIÓN
     if (target.closest('.delete-btn')) {
         playSound(sndDelete);
-        
-        // 1. Aplicar clase de animación de salida
         li.classList.add('fall-out');
         
-        // 2. Esperar a que termine la animación (0.4s en CSS)
         li.addEventListener('animationend', () => {
             tasks.splice(index, 1);
             showToast('Tarea eliminada', 'delete');
@@ -163,24 +150,39 @@ taskList.addEventListener('click', (e) => {
         return;
     }
     
-    // Interactividad extra: Clic en el texto también alterna completado
     if (target.classList.contains('task-text')) {
         tasks[index].completed = !tasks[index].completed;
         updateUI();
     }
 });
 
-// 8. EVENTO: Limpiar Todo con Confirmación (Interactividad de seguridad)
+// 8. EVENTO: Limpiar Todo
 clearAllBtn.addEventListener('click', () => {
-    // Una micro-interacción de confirmación nativa
     if(tasks.length > 0 && confirm('¿Seguro que quieres borrar TODAS las tareas?')) {
-        // Podríamos animar todas saliendo, pero para simplificar:
         tasks = [];
         showToast('Lista limpia', 'delete');
         updateUI();
     }
 });
 
+// --- NUEVO: LÓGICA FILTRADO DE BÚSQUEDA (BONUS) ---
+searchInput.addEventListener('keyup', () => {
+    const term = searchInput.value.toLowerCase().trim();
+    const listItems = document.querySelectorAll('.task-item');
+
+    listItems.forEach(item => {
+        const textElement = item.querySelector('.task-text');
+        if (textElement) {
+            const text = textElement.innerText.toLowerCase();
+            // Si el texto NO coincide, añadimos la clase 'filtered' (que tiene display:none en CSS)
+            if (text.includes(term)) {
+                item.classList.remove('filtered');
+            } else {
+                item.classList.add('filtered');
+            }
+        }
+    });
+});
 
 // --- INICIO ---
 document.addEventListener('DOMContentLoaded', updateUI);
