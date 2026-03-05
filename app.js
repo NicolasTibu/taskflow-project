@@ -1,13 +1,18 @@
 // --- CONFIGURACIÓN Y ESTADO ---
 const taskForm = document.getElementById('task-form');
 const taskInput = document.getElementById('task-input');
-const taskDateInput = document.getElementById('task-date'); // Nuevo: Selector de fecha
+const taskDateInput = document.getElementById('task-date');
 const taskList = document.getElementById('task-list');
 const taskCount = document.getElementById('task-count');
 const moodIcon = document.getElementById('mood-icon');
 const clearAllBtn = document.getElementById('clear-all-btn');
 const searchInput = document.getElementById('search-input');
-const filterBtns = document.querySelectorAll('.filter-btn'); // Nuevo: Botones de filtro
+const filterBtns = document.querySelectorAll('.filter-btn');
+
+// Elementos de Emoji
+const emojiBtn = document.getElementById('emoji-btn');
+const emojiPicker = document.getElementById('emoji-picker');
+const emojiOptions = document.querySelectorAll('.emoji-opt');
 
 const sndAdd = document.getElementById('sound-add');
 const sndDelete = document.getElementById('sound-delete');
@@ -29,21 +34,45 @@ themeToggle.addEventListener('click', () => {
     localStorage.theme = isDark ? 'dark' : 'light';
 });
 
-// Estado de las tareas y filtro activo
-let tasks = JSON.parse(localStorage.getItem('tasks_tailwind_v4')) || [];
+// Estado
+let tasks = JSON.parse(localStorage.getItem('tasks_tailwind_v5')) || [];
 let currentFilter = 'all';
+
+// --- LÓGICA DE EMOJIS ---
+
+// Abrir/Cerrar selector
+emojiBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    emojiPicker.classList.toggle('hidden');
+});
+
+// Insertar emoji en el input
+emojiOptions.forEach(opt => {
+    opt.addEventListener('click', () => {
+        taskInput.value = opt.innerText + " " + taskInput.value;
+        emojiPicker.classList.add('hidden');
+        taskInput.focus();
+    });
+});
+
+// Cerrar selector al hacer clic fuera
+document.addEventListener('click', (e) => {
+    if (!emojiPicker.contains(e.target) && !emojiBtn.contains(e.target)) {
+        emojiPicker.classList.add('hidden');
+    }
+});
 
 // --- FUNCIONES AUXILIARES ---
 
 function updateUI() {
-    // Ordenar automáticamente: Tareas incompletas primero, y por fecha más cercana
+    // Ordenar: Incompletas primero y por fecha
     tasks.sort((a, b) => {
         if (a.completed !== b.completed) return a.completed - b.completed;
         if (a.date && b.date) return new Date(a.date) - new Date(b.date);
         return a.date ? -1 : 1;
     });
 
-    localStorage.setItem('tasks_tailwind_v4', JSON.stringify(tasks));
+    localStorage.setItem('tasks_tailwind_v5', JSON.stringify(tasks));
     renderTasks();
     updateMood();
 }
@@ -64,7 +93,6 @@ function updateMood() {
     } else {
         moodIcon.classList.add('bg-primary-400', 'shadow-primary-400/50');
     }
-
     clearAllBtn.classList.toggle('hidden', tasks.length <= 1);
 }
 
@@ -106,7 +134,6 @@ function renderTasks() {
     taskList.innerHTML = '';
     const today = new Date().toISOString().split('T')[0];
 
-    // Filtrado lógico
     let filteredTasks = tasks;
     if (currentFilter === 'today') {
         filteredTasks = tasks.filter(t => t.date === today);
@@ -118,10 +145,7 @@ function renderTasks() {
     }
 
     if (filteredTasks.length === 0) {
-        taskList.innerHTML = `
-            <div class="flex flex-col items-center justify-center py-10 text-slate-400 dark:text-slate-600 italic">
-                <p class="text-xs">Sin tareas para este filtro</p>
-            </div>`;
+        taskList.innerHTML = `<div class="flex flex-col items-center justify-center py-10 text-slate-400 dark:text-slate-600 italic text-xs"><p>Sin misiones aquí</p></div>`;
         taskCount.innerText = "0 tareas pendientes";
         return;
     }
@@ -151,11 +175,10 @@ function renderTasks() {
                 <button class="delete-btn p-2 hover:bg-red-500/10 text-slate-400 hover:text-red-500 rounded-lg transition-all"><i class="fas fa-trash-alt"></i></button>
             </div>
         `;
-        
         taskList.appendChild(li);
     });
 
-    taskCount.innerText = `${tasks.filter(t => !t.completed).length} tareas pendientes`;
+    taskCount.innerText = `${tasks.filter(t => !t.completed).length} misiones pendientes`;
 }
 
 // --- EVENTOS ---
@@ -171,7 +194,7 @@ taskForm.addEventListener('submit', (e) => {
         taskDateInput.value = '';
         taskInput.focus();
         playSound(sndAdd);
-        showToast('Tarea organizada');
+        showToast('¡Tarea decorada y guardada!');
         updateUI();
     }
 });
@@ -180,8 +203,10 @@ taskList.addEventListener('click', (e) => {
     const target = e.target;
     const li = target.closest('.task-item');
     if (!li) return;
+    
+    // Obtenemos el texto para encontrar el índice real en el array original (por si hay filtros activos)
     const taskText = li.querySelector('.task-text').innerText;
-    const index = tasks.findIndex(t => t.text === taskText); // Buscar por texto debido al filtrado/orden
+    const index = tasks.findIndex(t => t.text === taskText);
 
     if (target.closest('.check-btn') || target.classList.contains('task-text')) {
         tasks[index].completed = !tasks[index].completed;
@@ -194,16 +219,16 @@ taskList.addEventListener('click', (e) => {
         li.classList.add('scale-95', 'opacity-0', '-translate-x-10');
         setTimeout(() => {
             tasks.splice(index, 1);
-            showToast('Tarea eliminada', 'delete');
+            showToast('Misión eliminada', 'delete');
             updateUI();
         }, 200);
     }
 });
 
 clearAllBtn.addEventListener('click', () => {
-    if(tasks.length > 0 && confirm('¿Borrar todas las tareas?')) {
+    if(tasks.length > 0 && confirm('¿Quieres resetear todo tu tablero?')) {
         tasks = [];
-        showToast('Todo despejado', 'delete');
+        showToast('Tablero limpio', 'delete');
         updateUI();
     }
 });

@@ -54,8 +54,12 @@
                 <div class="relative flex-[2] group">
                     <i class="fas fa-plus-circle absolute left-4 top-1/2 -translate-y-1/2 text-primary-400 group-focus-within:text-primary-600 dark:group-focus-within:text-primary-400 transition-colors"></i>
                     <input type="text" id="task-input" 
-                        class="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 focus:border-primary-500 dark:focus:border-primary-400 focus:bg-white dark:focus:bg-slate-800 rounded-xl outline-none focus:ring-4 focus:ring-primary-500/20 transition-all duration-300 placeholder-slate-400"
+                        class="w-full pl-12 pr-12 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 focus:border-primary-500 dark:focus:border-primary-400 focus:bg-white dark:focus:bg-slate-800 rounded-xl outline-none focus:ring-4 focus:ring-primary-500/20 transition-all duration-300 placeholder-slate-400"
                         placeholder="Nueva tarea..." required maxlength="50">
+                    
+                    <button type="button" id="emoji-btn" class="absolute right-3 top-1/2 -translate-y-1/2 text-xl hover:scale-125 transition-transform focus:outline-none">
+                        ✨
+                    </button>
                 </div>
                 
                 <div class="relative flex-1 group">
@@ -67,6 +71,19 @@
                 <button type="submit" id="add-btn" class="bg-primary-500 hover:bg-primary-600 text-white px-6 rounded-xl hover:-translate-y-1 hover:shadow-lg active:scale-95 transition-all duration-300 flex justify-center items-center py-3 sm:py-0">
                     <i class="fas fa-arrow-right"></i>
                 </button>
+            </div>
+
+            <div id="emoji-picker" class="hidden flex flex-wrap gap-2 p-3 bg-white/90 dark:bg-slate-800/90 backdrop-blur shadow-xl border border-slate-200 dark:border-slate-700 rounded-xl animate-in fade-in zoom-in duration-200">
+                <button type="button" class="emoji-opt hover:bg-primary-100 dark:hover:bg-primary-900/30 p-1.5 rounded-lg transition-colors">🎯</button>
+                <button type="button" class="emoji-opt hover:bg-primary-100 dark:hover:bg-primary-900/30 p-1.5 rounded-lg transition-colors">💻</button>
+                <button type="button" class="emoji-opt hover:bg-primary-100 dark:hover:bg-primary-900/30 p-1.5 rounded-lg transition-colors">📚</button>
+                <button type="button" class="emoji-opt hover:bg-primary-100 dark:hover:bg-primary-900/30 p-1.5 rounded-lg transition-colors">🍎</button>
+                <button type="button" class="emoji-opt hover:bg-primary-100 dark:hover:bg-primary-900/30 p-1.5 rounded-lg transition-colors">💪</button>
+                <button type="button" class="emoji-opt hover:bg-primary-100 dark:hover:bg-primary-900/30 p-1.5 rounded-lg transition-colors">🛒</button>
+                <button type="button" class="emoji-opt hover:bg-primary-100 dark:hover:bg-primary-900/30 p-1.5 rounded-lg transition-colors">🏠</button>
+                <button type="button" class="emoji-opt hover:bg-primary-100 dark:hover:bg-primary-900/30 p-1.5 rounded-lg transition-colors">🌟</button>
+                <button type="button" class="emoji-opt hover:bg-primary-100 dark:hover:bg-primary-900/30 p-1.5 rounded-lg transition-colors">🎨</button>
+                <button type="button" class="emoji-opt hover:bg-primary-100 dark:hover:bg-primary-900/30 p-1.5 rounded-lg transition-colors">☕</button>
             </div>
         </form>
 
