@@ -27,6 +27,22 @@
             ::-webkit-scrollbar { width: 6px; }
             ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
             .dark ::-webkit-scrollbar-thumb { background-color: #475569; }
+
+            /* Ajuste de simetría para el selector de fecha nativo */
+            input[type="date"]::-webkit-calendar-picker-indicator {
+                cursor: pointer;
+                border-radius: 6px;
+                margin-right: 2px;
+                opacity: 0.5;
+                transition: all 0.2s;
+            }
+            input[type="date"]::-webkit-calendar-picker-indicator:hover {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+            .dark input[type="date"]::-webkit-calendar-picker-indicator {
+                filter: invert(1);
+            }
         }
     </style>
 </head>
@@ -51,43 +67,45 @@
 
         <form id="task-form" class="flex flex-col gap-4 mb-8 bg-slate-50/50 dark:bg-slate-900/20 p-4 rounded-2xl border border-slate-200 dark:border-slate-700">
     
-    <div class="relative group">
-        <i class="fas fa-feather-alt absolute left-4 top-1/2 -translate-y-1/2 text-primary-400 text-lg"></i>
-        <input type="text" id="task-input" 
-            class="w-full pl-12 pr-12 py-4 bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 focus:border-primary-500 rounded-2xl outline-none focus:ring-4 focus:ring-primary-500/10 transition-all text-lg placeholder-slate-400"
-            placeholder="¿Qué tienes en mente hoy?" required maxlength="80">
-        
-        <button type="button" id="emoji-btn" class="absolute right-4 top-1/2 -translate-y-1/2 text-2xl hover:scale-125 transition-transform focus:outline-none">
-            ✨
-        </button>
-    </div>
+            <div class="relative group">
+                <i class="fas fa-feather-alt absolute left-4 top-1/2 -translate-y-1/2 text-primary-400 text-lg"></i>
+                <input type="text" id="task-input" 
+                    class="w-full pl-12 pr-12 py-4 bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 focus:border-primary-500 rounded-2xl outline-none focus:ring-4 focus:ring-primary-500/10 transition-all text-lg placeholder-slate-400"
+                    placeholder="¿Qué tienes en mente hoy?" required maxlength="80">
+                
+                <button type="button" id="emoji-btn" class="absolute right-4 top-1/2 -translate-y-1/2 text-2xl hover:scale-125 transition-transform focus:outline-none">
+                    ✨
+                </button>
+            </div>
 
-    <div class="flex flex-col sm:flex-row gap-3">
-        <div class="relative flex-1 group">
-            <i class="fas fa-calendar-day absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-            <input type="date" id="task-date" 
-                class="w-full pl-11 pr-4 py-3 bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 focus:border-primary-500 rounded-xl outline-none transition-all text-sm text-slate-600 dark:text-slate-300">
-        </div>
+            <div class="flex flex-col sm:flex-row gap-3">
+                <div class="relative flex-1 group">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <i class="fas fa-calendar-day text-slate-400 group-focus-within:text-primary-500 transition-colors"></i>
+                    </div>
+                    <input type="date" id="task-date" 
+                        class="w-full pl-11 pr-3 py-3 bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 focus:border-primary-500 rounded-xl outline-none transition-all text-sm text-slate-600 dark:text-slate-300 min-h-[52px]">
+                </div>
 
-        <button type="submit" id="add-btn" class="bg-primary-500 hover:bg-primary-600 text-white font-bold px-8 rounded-xl hover:shadow-lg hover:shadow-primary-500/30 active:scale-95 transition-all flex justify-center items-center py-3 gap-2">
-            <span>Añadir Tarea</span>
-            <i class="fas fa-paper-plane text-xs"></i>
-        </button>
-    </div>
+                <button type="submit" id="add-btn" class="bg-primary-500 hover:bg-primary-600 text-white font-bold px-8 rounded-xl hover:shadow-lg hover:shadow-primary-500/30 active:scale-95 transition-all flex justify-center items-center py-3 gap-2">
+                    <span>Añadir</span>
+                    <i class="fas fa-paper-plane text-xs"></i>
+                </button>
+            </div>
 
-    <div id="emoji-picker" class="hidden flex flex-wrap justify-center gap-2 p-3 bg-white dark:bg-slate-800 shadow-2xl border border-slate-200 dark:border-slate-700 rounded-xl">
-        <button type="button" class="emoji-opt hover:bg-primary-50 dark:hover:bg-primary-900/20 p-2 rounded-lg text-xl transition-all">🎯</button>
-        <button type="button" class="emoji-opt hover:bg-primary-50 dark:hover:bg-primary-900/20 p-2 rounded-lg text-xl transition-all">💻</button>
-        <button type="button" class="emoji-opt hover:bg-primary-50 dark:hover:bg-primary-900/20 p-2 rounded-lg text-xl transition-all">📚</button>
-        <button type="button" class="emoji-opt hover:bg-primary-50 dark:hover:bg-primary-900/20 p-2 rounded-lg text-xl transition-all">🍎</button>
-        <button type="button" class="emoji-opt hover:bg-primary-50 dark:hover:bg-primary-900/20 p-2 rounded-lg text-xl transition-all">💪</button>
-        <button type="button" class="emoji-opt hover:bg-primary-50 dark:hover:bg-primary-900/20 p-2 rounded-lg text-xl transition-all">🛒</button>
-        <button type="button" class="emoji-opt hover:bg-primary-50 dark:hover:bg-primary-900/20 p-2 rounded-lg text-xl transition-all">🌟</button>
-        <button type="button" class="emoji-opt hover:bg-primary-50 dark:hover:bg-primary-900/20 p-2 rounded-lg text-xl transition-all">🎨</button>
-        <button type="button" class="emoji-opt hover:bg-primary-50 dark:hover:bg-primary-900/20 p-2 rounded-lg text-xl transition-all">☕</button>
-        <button type="button" class="emoji-opt hover:bg-primary-50 dark:hover:bg-primary-900/20 p-2 rounded-lg text-xl transition-all">📝</button>
-    </div>
-</form>
+            <div id="emoji-picker" class="hidden flex flex-wrap justify-center gap-2 p-3 bg-white dark:bg-slate-800 shadow-2xl border border-slate-200 dark:border-slate-700 rounded-xl">
+                <button type="button" class="emoji-opt hover:bg-primary-50 dark:hover:bg-primary-900/20 p-2 rounded-lg text-xl transition-all">🎯</button>
+                <button type="button" class="emoji-opt hover:bg-primary-50 dark:hover:bg-primary-900/20 p-2 rounded-lg text-xl transition-all">💻</button>
+                <button type="button" class="emoji-opt hover:bg-primary-50 dark:hover:bg-primary-900/20 p-2 rounded-lg text-xl transition-all">📚</button>
+                <button type="button" class="emoji-opt hover:bg-primary-50 dark:hover:bg-primary-900/20 p-2 rounded-lg text-xl transition-all">🍎</button>
+                <button type="button" class="emoji-opt hover:bg-primary-50 dark:hover:bg-primary-900/20 p-2 rounded-lg text-xl transition-all">💪</button>
+                <button type="button" class="emoji-opt hover:bg-primary-50 dark:hover:bg-primary-900/20 p-2 rounded-lg text-xl transition-all">🛒</button>
+                <button type="button" class="emoji-opt hover:bg-primary-50 dark:hover:bg-primary-900/20 p-2 rounded-lg text-xl transition-all">🌟</button>
+                <button type="button" class="emoji-opt hover:bg-primary-50 dark:hover:bg-primary-900/20 p-2 rounded-lg text-xl transition-all">🎨</button>
+                <button type="button" class="emoji-opt hover:bg-primary-50 dark:hover:bg-primary-900/20 p-2 rounded-lg text-xl transition-all">☕</button>
+                <button type="button" class="emoji-opt hover:bg-primary-50 dark:hover:bg-primary-900/20 p-2 rounded-lg text-xl transition-all">📝</button>
+            </div>
+        </form>
 
         <div class="relative mb-4 group">
             <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
@@ -109,8 +127,7 @@
             </button>
         </div>
 
-        <ul id="task-list" class="space-y-3 max-h-[300px] overflow-y-auto pr-2">
-            </ul>
+        <ul id="task-list" class="space-y-3 max-h-[300px] overflow-y-auto pr-2"></ul>
     </div>
 
     <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-3"></div>
