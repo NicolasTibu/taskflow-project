@@ -49,43 +49,45 @@
             <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Gestiona tu día con fluidez</p>
         </header>
 
-        <form id="task-form" class="flex flex-col gap-3 mb-6">
-            <div class="flex flex-col sm:flex-row gap-3">
-                <div class="relative flex-[2] group">
-                    <i class="fas fa-plus-circle absolute left-4 top-1/2 -translate-y-1/2 text-primary-400 group-focus-within:text-primary-600 dark:group-focus-within:text-primary-400 transition-colors"></i>
-                    <input type="text" id="task-input" 
-                        class="w-full pl-12 pr-12 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 focus:border-primary-500 dark:focus:border-primary-400 focus:bg-white dark:focus:bg-slate-800 rounded-xl outline-none focus:ring-4 focus:ring-primary-500/20 transition-all duration-300 placeholder-slate-400"
-                        placeholder="Nueva tarea..." required maxlength="50">
-                    
-                    <button type="button" id="emoji-btn" class="absolute right-3 top-1/2 -translate-y-1/2 text-xl hover:scale-125 transition-transform focus:outline-none">
-                        ✨
-                    </button>
-                </div>
-                
-                <div class="relative flex-1 group">
-                    <i class="fas fa-calendar-alt absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary-400 transition-colors"></i>
-                    <input type="date" id="task-date" 
-                        class="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 focus:border-primary-500 rounded-xl outline-none focus:ring-4 focus:ring-primary-500/20 transition-all text-sm text-slate-500 dark:text-slate-400">
-                </div>
+        <form id="task-form" class="flex flex-col gap-4 mb-8 bg-slate-50/50 dark:bg-slate-900/20 p-4 rounded-2xl border border-slate-200 dark:border-slate-700">
+    
+    <div class="relative group">
+        <i class="fas fa-feather-alt absolute left-4 top-1/2 -translate-y-1/2 text-primary-400 text-lg"></i>
+        <input type="text" id="task-input" 
+            class="w-full pl-12 pr-12 py-4 bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 focus:border-primary-500 rounded-2xl outline-none focus:ring-4 focus:ring-primary-500/10 transition-all text-lg placeholder-slate-400"
+            placeholder="¿Qué tienes en mente hoy?" required maxlength="80">
+        
+        <button type="button" id="emoji-btn" class="absolute right-4 top-1/2 -translate-y-1/2 text-2xl hover:scale-125 transition-transform focus:outline-none">
+            ✨
+        </button>
+    </div>
 
-                <button type="submit" id="add-btn" class="bg-primary-500 hover:bg-primary-600 text-white px-6 rounded-xl hover:-translate-y-1 hover:shadow-lg active:scale-95 transition-all duration-300 flex justify-center items-center py-3 sm:py-0">
-                    <i class="fas fa-arrow-right"></i>
-                </button>
-            </div>
+    <div class="flex flex-col sm:flex-row gap-3">
+        <div class="relative flex-1 group">
+            <i class="fas fa-calendar-day absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <input type="date" id="task-date" 
+                class="w-full pl-11 pr-4 py-3 bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 focus:border-primary-500 rounded-xl outline-none transition-all text-sm text-slate-600 dark:text-slate-300">
+        </div>
 
-            <div id="emoji-picker" class="hidden flex flex-wrap gap-2 p-3 bg-white/90 dark:bg-slate-800/90 backdrop-blur shadow-xl border border-slate-200 dark:border-slate-700 rounded-xl animate-in fade-in zoom-in duration-200">
-                <button type="button" class="emoji-opt hover:bg-primary-100 dark:hover:bg-primary-900/30 p-1.5 rounded-lg transition-colors">🎯</button>
-                <button type="button" class="emoji-opt hover:bg-primary-100 dark:hover:bg-primary-900/30 p-1.5 rounded-lg transition-colors">💻</button>
-                <button type="button" class="emoji-opt hover:bg-primary-100 dark:hover:bg-primary-900/30 p-1.5 rounded-lg transition-colors">📚</button>
-                <button type="button" class="emoji-opt hover:bg-primary-100 dark:hover:bg-primary-900/30 p-1.5 rounded-lg transition-colors">🍎</button>
-                <button type="button" class="emoji-opt hover:bg-primary-100 dark:hover:bg-primary-900/30 p-1.5 rounded-lg transition-colors">💪</button>
-                <button type="button" class="emoji-opt hover:bg-primary-100 dark:hover:bg-primary-900/30 p-1.5 rounded-lg transition-colors">🛒</button>
-                <button type="button" class="emoji-opt hover:bg-primary-100 dark:hover:bg-primary-900/30 p-1.5 rounded-lg transition-colors">🏠</button>
-                <button type="button" class="emoji-opt hover:bg-primary-100 dark:hover:bg-primary-900/30 p-1.5 rounded-lg transition-colors">🌟</button>
-                <button type="button" class="emoji-opt hover:bg-primary-100 dark:hover:bg-primary-900/30 p-1.5 rounded-lg transition-colors">🎨</button>
-                <button type="button" class="emoji-opt hover:bg-primary-100 dark:hover:bg-primary-900/30 p-1.5 rounded-lg transition-colors">☕</button>
-            </div>
-        </form>
+        <button type="submit" id="add-btn" class="bg-primary-500 hover:bg-primary-600 text-white font-bold px-8 rounded-xl hover:shadow-lg hover:shadow-primary-500/30 active:scale-95 transition-all flex justify-center items-center py-3 gap-2">
+            <span>Añadir Tarea</span>
+            <i class="fas fa-paper-plane text-xs"></i>
+        </button>
+    </div>
+
+    <div id="emoji-picker" class="hidden flex flex-wrap justify-center gap-2 p-3 bg-white dark:bg-slate-800 shadow-2xl border border-slate-200 dark:border-slate-700 rounded-xl">
+        <button type="button" class="emoji-opt hover:bg-primary-50 dark:hover:bg-primary-900/20 p-2 rounded-lg text-xl transition-all">🎯</button>
+        <button type="button" class="emoji-opt hover:bg-primary-50 dark:hover:bg-primary-900/20 p-2 rounded-lg text-xl transition-all">💻</button>
+        <button type="button" class="emoji-opt hover:bg-primary-50 dark:hover:bg-primary-900/20 p-2 rounded-lg text-xl transition-all">📚</button>
+        <button type="button" class="emoji-opt hover:bg-primary-50 dark:hover:bg-primary-900/20 p-2 rounded-lg text-xl transition-all">🍎</button>
+        <button type="button" class="emoji-opt hover:bg-primary-50 dark:hover:bg-primary-900/20 p-2 rounded-lg text-xl transition-all">💪</button>
+        <button type="button" class="emoji-opt hover:bg-primary-50 dark:hover:bg-primary-900/20 p-2 rounded-lg text-xl transition-all">🛒</button>
+        <button type="button" class="emoji-opt hover:bg-primary-50 dark:hover:bg-primary-900/20 p-2 rounded-lg text-xl transition-all">🌟</button>
+        <button type="button" class="emoji-opt hover:bg-primary-50 dark:hover:bg-primary-900/20 p-2 rounded-lg text-xl transition-all">🎨</button>
+        <button type="button" class="emoji-opt hover:bg-primary-50 dark:hover:bg-primary-900/20 p-2 rounded-lg text-xl transition-all">☕</button>
+        <button type="button" class="emoji-opt hover:bg-primary-50 dark:hover:bg-primary-900/20 p-2 rounded-lg text-xl transition-all">📝</button>
+    </div>
+</form>
 
         <div class="relative mb-4 group">
             <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
