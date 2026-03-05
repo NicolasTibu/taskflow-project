@@ -9,7 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
-            darkMode: 'class', // Punto 3 y 4: Soporte para modo oscuro por clase
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
@@ -49,33 +49,48 @@
             <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Gestiona tu día con fluidez</p>
         </header>
 
-        <form id="task-form" class="flex gap-3 mb-4">
-            <div class="relative flex-1 group">
-                <i class="fas fa-plus-circle absolute left-4 top-1/2 -translate-y-1/2 text-primary-400 group-focus-within:text-primary-600 dark:group-focus-within:text-primary-400 transition-colors"></i>
-                <input type="text" id="task-input" 
-                    class="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 focus:border-primary-500 dark:focus:border-primary-400 focus:bg-white dark:focus:bg-slate-800 rounded-xl outline-none focus:ring-4 focus:ring-primary-500/20 transition-all duration-300 placeholder-slate-400"
-                    placeholder="Añadir una nueva tarea mágica..." required maxlength="50">
+        <form id="task-form" class="flex flex-col gap-3 mb-6">
+            <div class="flex flex-col sm:flex-row gap-3">
+                <div class="relative flex-[2] group">
+                    <i class="fas fa-plus-circle absolute left-4 top-1/2 -translate-y-1/2 text-primary-400 group-focus-within:text-primary-600 dark:group-focus-within:text-primary-400 transition-colors"></i>
+                    <input type="text" id="task-input" 
+                        class="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 focus:border-primary-500 dark:focus:border-primary-400 focus:bg-white dark:focus:bg-slate-800 rounded-xl outline-none focus:ring-4 focus:ring-primary-500/20 transition-all duration-300 placeholder-slate-400"
+                        placeholder="Nueva tarea..." required maxlength="50">
+                </div>
+                
+                <div class="relative flex-1 group">
+                    <i class="fas fa-calendar-alt absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary-400 transition-colors"></i>
+                    <input type="date" id="task-date" 
+                        class="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 focus:border-primary-500 rounded-xl outline-none focus:ring-4 focus:ring-primary-500/20 transition-all text-sm text-slate-500 dark:text-slate-400">
+                </div>
+
+                <button type="submit" id="add-btn" class="bg-primary-500 hover:bg-primary-600 text-white px-6 rounded-xl hover:-translate-y-1 hover:shadow-lg active:scale-95 transition-all duration-300 flex justify-center items-center py-3 sm:py-0">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
             </div>
-            <button type="submit" id="add-btn" class="bg-primary-500 hover:bg-primary-600 text-white px-5 rounded-xl hover:-translate-y-1 hover:shadow-lg hover:shadow-primary-500/30 active:scale-95 focus:outline-none focus:ring-4 focus:ring-primary-500/50 transition-all duration-300 flex justify-center items-center">
-                <i class="fas fa-arrow-right"></i>
-            </button>
         </form>
 
-        <div class="relative mb-6 group">
+        <div class="relative mb-4 group">
             <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
             <input type="text" id="search-input" 
                 class="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-700 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500/50 transition-all duration-300 placeholder-slate-400 text-slate-700 dark:text-slate-200"
-                placeholder="Buscar entre tus tareas...">
+                placeholder="Buscar tareas...">
+        </div>
+
+        <div class="flex gap-2 mb-6 p-1 bg-slate-100 dark:bg-slate-900/50 rounded-xl">
+            <button data-filter="all" class="filter-btn flex-1 py-1.5 text-[10px] font-bold rounded-lg transition-all bg-white dark:bg-slate-800 shadow-sm text-primary-500">TODAS</button>
+            <button data-filter="today" class="filter-btn flex-1 py-1.5 text-[10px] font-bold rounded-lg transition-all text-slate-500 hover:bg-white/50 dark:hover:bg-slate-800/50">HOY</button>
+            <button data-filter="week" class="filter-btn flex-1 py-1.5 text-[10px] font-bold rounded-lg transition-all text-slate-500 hover:bg-white/50 dark:hover:bg-slate-800/50">SEMANA</button>
         </div>
 
         <div class="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 mb-4 px-1 font-medium">
-            <span id="task-count">0 tareas restantes</span>
+            <span id="task-count">0 tareas pendientes</span>
             <button id="clear-all-btn" class="hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200 hidden flex items-center">
                 <i class="fas fa-broom mr-1"></i> Limpiar todo
             </button>
         </div>
 
-        <ul id="task-list" class="space-y-3 max-h-[350px] overflow-y-auto pr-2">
+        <ul id="task-list" class="space-y-3 max-h-[300px] overflow-y-auto pr-2">
             </ul>
     </div>
 

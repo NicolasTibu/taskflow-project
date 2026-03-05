@@ -1,22 +1,22 @@
 // --- CONFIGURACIÓN Y ESTADO ---
 const taskForm = document.getElementById('task-form');
 const taskInput = document.getElementById('task-input');
+const taskDateInput = document.getElementById('task-date'); // Nuevo: Selector de fecha
 const taskList = document.getElementById('task-list');
 const taskCount = document.getElementById('task-count');
 const moodIcon = document.getElementById('mood-icon');
 const clearAllBtn = document.getElementById('clear-all-btn');
 const searchInput = document.getElementById('search-input');
+const filterBtns = document.querySelectorAll('.filter-btn'); // Nuevo: Botones de filtro
 
-// Elementos de Sonido
 const sndAdd = document.getElementById('sound-add');
 const sndDelete = document.getElementById('sound-delete');
 
-// --- LÓGICA MODO OSCURO (Punto 4) ---
+// --- LÓGICA MODO OSCURO ---
 const themeToggle = document.getElementById('theme-toggle');
 const themeIcon = document.getElementById('theme-icon');
 const html = document.documentElement;
 
-// Carga inicial de tema
 if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
     html.classList.add('dark');
     themeIcon.classList.replace('fa-moon', 'fa-sun');
@@ -29,46 +29,48 @@ themeToggle.addEventListener('click', () => {
     localStorage.theme = isDark ? 'dark' : 'light';
 });
 
-// Estado de las tareas
-let tasks = JSON.parse(localStorage.getItem('tasks_tailwind_v3')) || [];
+// Estado de las tareas y filtro activo
+let tasks = JSON.parse(localStorage.getItem('tasks_tailwind_v4')) || [];
+let currentFilter = 'all';
 
 // --- FUNCIONES AUXILIARES ---
 
 function updateUI() {
-    localStorage.setItem('tasks_tailwind_v3', JSON.stringify(tasks));
+    // Ordenar automáticamente: Tareas incompletas primero, y por fecha más cercana
+    tasks.sort((a, b) => {
+        if (a.completed !== b.completed) return a.completed - b.completed;
+        if (a.date && b.date) return new Date(a.date) - new Date(b.date);
+        return a.date ? -1 : 1;
+    });
+
+    localStorage.setItem('tasks_tailwind_v4', JSON.stringify(tasks));
     renderTasks();
     updateMood();
 }
 
 function playSound(audioEl) {
     audioEl.currentTime = 0;
-    // audioEl.play().catch(()=>{}); // Descomentar para activar sonido
+    // audioEl.play().catch(()=>{}); 
 }
 
 function updateMood() {
-    // Usando clases de Tailwind para el indicador de ánimo
     moodIcon.className = 'w-6 h-6 rounded-full transition-all duration-500 shadow-md';
-    if (tasks.length === 0) {
-        moodIcon.classList.add('bg-slate-400', 'shadow-slate-400/50');
-    } else if (tasks.length > 5) {
+    const pending = tasks.filter(t => !t.completed).length;
+    
+    if (pending === 0) {
+        moodIcon.classList.add('bg-emerald-400', 'shadow-emerald-400/50');
+    } else if (pending > 5) {
         moodIcon.classList.add('bg-orange-400', 'shadow-orange-400/50', 'animate-pulse');
     } else {
-        moodIcon.classList.add('bg-emerald-400', 'shadow-emerald-400/50');
+        moodIcon.classList.add('bg-primary-400', 'shadow-primary-400/50');
     }
 
-    // Toggle del botón "Limpiar todo"
-    if (tasks.length > 1) {
-        clearAllBtn.classList.remove('hidden');
-    } else {
-        clearAllBtn.classList.add('hidden');
-    }
+    clearAllBtn.classList.toggle('hidden', tasks.length <= 1);
 }
 
-// Toast con Tailwind CSS
 function showToast(message, type = 'success') {
     const container = document.getElementById('toast-container');
     const toast = document.createElement('div');
-    
     const colorClass = type === 'success' ? 'border-emerald-500' : 'border-red-500';
     const icon = type === 'success' ? 'fa-check-circle text-emerald-500' : 'fa-trash-alt text-red-500';
 
@@ -76,57 +78,84 @@ function showToast(message, type = 'success') {
     toast.innerHTML = `<i class="fas ${icon}"></i> <span class="text-sm font-medium">${message}</span>`;
     
     container.appendChild(toast);
-
-    // Entrada suave
     setTimeout(() => toast.classList.remove('translate-x-full', 'opacity-0'), 10);
-
-    // Salida y eliminación
     setTimeout(() => {
         toast.classList.add('translate-x-full', 'opacity-0');
         setTimeout(() => toast.remove(), 300);
     }, 3000);
 }
 
-// --- RENDERIZADO (Punto 2 y 5) ---
+// --- LÓGICA DE FILTROS ---
+filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        filterBtns.forEach(b => {
+            b.classList.remove('bg-white', 'dark:bg-slate-800', 'shadow-sm', 'text-primary-500');
+            b.classList.add('text-slate-500');
+        });
+        btn.classList.add('bg-white', 'dark:bg-slate-800', 'shadow-sm', 'text-primary-500');
+        btn.classList.remove('text-slate-500');
+        
+        currentFilter = btn.dataset.filter;
+        renderTasks();
+    });
+});
+
+// --- RENDERIZADO ---
 
 function renderTasks() {
     taskList.innerHTML = '';
+    const today = new Date().toISOString().split('T')[0];
 
-    if (tasks.length === 0) {
+    // Filtrado lógico
+    let filteredTasks = tasks;
+    if (currentFilter === 'today') {
+        filteredTasks = tasks.filter(t => t.date === today);
+    } else if (currentFilter === 'week') {
+        const weekAway = new Date();
+        weekAway.setDate(weekAway.getDate() + 7);
+        const weekAwayStr = weekAway.toISOString().split('T')[0];
+        filteredTasks = tasks.filter(t => t.date >= today && t.date <= weekAwayStr);
+    }
+
+    if (filteredTasks.length === 0) {
         taskList.innerHTML = `
-            <div class="flex flex-col items-center justify-center py-12 text-slate-400 dark:text-slate-600 transition-all">
-                <i class="fas fa-feather text-5xl mb-4 opacity-20"></i>
-                <p class="font-medium">Tu lista está vacía</p>
+            <div class="flex flex-col items-center justify-center py-10 text-slate-400 dark:text-slate-600 italic">
+                <p class="text-xs">Sin tareas para este filtro</p>
             </div>`;
-        taskCount.innerText = "0 tareas restantes";
+        taskCount.innerText = "0 tareas pendientes";
         return;
     }
 
-    tasks.forEach((task, index) => {
+    filteredTasks.forEach((task, index) => {
         const li = document.createElement('li');
         li.dataset.index = index;
         
-        // Clases de Tailwind para el Item (Bonus: Hovers y transiciones)
-        li.className = `task-item group flex justify-between items-center p-4 bg-white/50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-700 rounded-2xl hover:border-primary-400 dark:hover:border-primary-500 hover:shadow-lg transition-all duration-300 ${task.completed ? 'opacity-50' : ''}`;
+        const isOverdue = task.date && task.date < today && !task.completed;
+        const dateDisplay = task.date ? new Date(task.date + "T00:00:00").toLocaleDateString('es-ES', {day:'numeric', month:'short'}) : null;
+
+        li.className = `task-item group flex justify-between items-center p-4 bg-white/50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-700 rounded-2xl hover:border-primary-400 transition-all duration-300 ${task.completed ? 'opacity-50' : ''}`;
 
         li.innerHTML = `
-            <span class="task-text flex-1 text-slate-700 dark:text-slate-200 transition-all duration-300 cursor-pointer ${task.completed ? 'line-through opacity-50' : 'font-medium'}">
-                ${task.text}
-            </span>
+            <div class="flex flex-col flex-1 cursor-pointer pr-4">
+                <span class="task-text text-slate-700 dark:text-slate-200 transition-all ${task.completed ? 'line-through opacity-50' : 'font-medium'}">
+                    ${task.text}
+                </span>
+                ${task.date ? `
+                    <span class="text-[10px] mt-1 flex items-center gap-1 ${isOverdue ? 'text-red-500 font-bold animate-pulse' : 'text-slate-400'}">
+                        <i class="far fa-calendar-alt"></i> ${dateDisplay} ${isOverdue ? '(Atrasada)' : ''}
+                    </span>
+                ` : ''}
+            </div>
             <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <button class="check-btn p-2 hover:bg-emerald-100 dark:hover:bg-emerald-500/10 text-slate-400 hover:text-emerald-500 rounded-lg transition-all">
-                    <i class="fas fa-check"></i>
-                </button>
-                <button class="delete-btn p-2 hover:bg-red-100 dark:hover:bg-red-500/10 text-slate-400 hover:text-red-500 rounded-lg transition-all">
-                    <i class="fas fa-trash-alt"></i>
-                </button>
+                <button class="check-btn p-2 hover:bg-emerald-500/10 text-slate-400 hover:text-emerald-500 rounded-lg transition-all"><i class="fas fa-check"></i></button>
+                <button class="delete-btn p-2 hover:bg-red-500/10 text-slate-400 hover:text-red-500 rounded-lg transition-all"><i class="fas fa-trash-alt"></i></button>
             </div>
         `;
         
         taskList.appendChild(li);
     });
 
-    taskCount.innerText = `${tasks.filter(t => !t.completed).length} tareas restantes`;
+    taskCount.innerText = `${tasks.filter(t => !t.completed).length} tareas pendientes`;
 }
 
 // --- EVENTOS ---
@@ -134,13 +163,15 @@ function renderTasks() {
 taskForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const text = taskInput.value.trim();
+    const date = taskDateInput.value;
+
     if (text) {
-        tasks.push({ text: text, completed: false });
+        tasks.push({ text, completed: false, date });
         taskInput.value = '';
-        searchInput.value = '';
+        taskDateInput.value = '';
         taskInput.focus();
         playSound(sndAdd);
-        showToast('Tarea añadida');
+        showToast('Tarea organizada');
         updateUI();
     }
 });
@@ -149,16 +180,15 @@ taskList.addEventListener('click', (e) => {
     const target = e.target;
     const li = target.closest('.task-item');
     if (!li) return;
-    const index = li.dataset.index;
+    const taskText = li.querySelector('.task-text').innerText;
+    const index = tasks.findIndex(t => t.text === taskText); // Buscar por texto debido al filtrado/orden
 
-    // Acción Check
     if (target.closest('.check-btn') || target.classList.contains('task-text')) {
         tasks[index].completed = !tasks[index].completed;
         updateUI();
         return;
     }
 
-    // Acción Eliminar con Animación
     if (target.closest('.delete-btn')) {
         playSound(sndDelete);
         li.classList.add('scale-95', 'opacity-0', '-translate-x-10');
@@ -178,12 +208,9 @@ clearAllBtn.addEventListener('click', () => {
     }
 });
 
-// Búsqueda en tiempo real
 searchInput.addEventListener('keyup', () => {
     const term = searchInput.value.toLowerCase().trim();
-    const listItems = document.querySelectorAll('.task-item');
-
-    listItems.forEach(item => {
+    document.querySelectorAll('.task-item').forEach(item => {
         const text = item.querySelector('.task-text').innerText.toLowerCase();
         item.classList.toggle('filtered', !text.includes(term));
     });
