@@ -3,47 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TaskFlow Pro | Tu Espacio Productivo</title>
+    <title>TaskFlow Pro | Tu Espacio Productivo: Tailwind Edition</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="bg-glow"></div>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class', // Punto 3 y 4: Soporte para modo oscuro por clase
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5' },
+                        accent: '#00cec9'
+                    }
+                }
+            }
+        }
+    </script>
 
-    <div class="app-container glass">
-        <header>
-            <div class="header-top">
-                <h1>Task<span class="accent">Flow</span></h1>
-                <div id="mood-icon" class="mood-neutral"></div> 
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .filtered { display: none !important; }
+            ::-webkit-scrollbar { width: 6px; }
+            ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
+            .dark ::-webkit-scrollbar-thumb { background-color: #475569; }
+        }
+    </style>
+</head>
+
+<body class="bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-300 flex justify-center items-center p-4 relative overflow-hidden">
+
+    <button id="theme-toggle" class="fixed top-5 right-5 z-50 p-3 bg-white dark:bg-slate-800 rounded-full hover:scale-110 focus:outline-none focus:ring-4 focus:ring-primary-500/50 transition-all duration-300 shadow-lg border border-slate-200 dark:border-slate-700">
+        <i id="theme-icon" class="fas fa-moon text-slate-600 dark:text-yellow-400 text-lg"></i>
+    </button>
+
+    <div class="absolute w-[400px] h-[400px] bg-primary-500/20 dark:bg-primary-500/10 blur-[100px] rounded-full z-0 pointer-events-none"></div>
+
+    <div class="w-full max-w-md bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl p-8 rounded-[2rem] shadow-2xl border border-white/40 dark:border-slate-700/50 relative z-10 transition-all duration-300">
+        
+        <header class="mb-6">
+            <div class="flex justify-between items-center">
+                <h1 class="text-3xl font-extrabold tracking-tight">Task<span class="text-primary-500 drop-shadow-[0_0_8px_rgba(99,102,241,0.5)]">Flow</span></h1>
+                <div id="mood-icon" class="w-6 h-6 rounded-full transition-all duration-300 shadow-md bg-slate-400"></div> 
             </div>
-            <p class="subtitle">Gestiona tu día con fluidez</p>
+            <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Gestiona tu día con fluidez</p>
         </header>
 
-        <form id="task-form" class="neumorphic-form">
-            <div class="input-group">
-                <i class="fas fa-plus-circle input-icon"></i>
-                <input type="text" id="task-input" placeholder="Añadir una nueva tarea mágica..." required maxlength="50">
+        <form id="task-form" class="flex gap-3 mb-4">
+            <div class="relative flex-1 group">
+                <i class="fas fa-plus-circle absolute left-4 top-1/2 -translate-y-1/2 text-primary-400 group-focus-within:text-primary-600 dark:group-focus-within:text-primary-400 transition-colors"></i>
+                <input type="text" id="task-input" 
+                    class="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 focus:border-primary-500 dark:focus:border-primary-400 focus:bg-white dark:focus:bg-slate-800 rounded-xl outline-none focus:ring-4 focus:ring-primary-500/20 transition-all duration-300 placeholder-slate-400"
+                    placeholder="Añadir una nueva tarea mágica..." required maxlength="50">
             </div>
-            <button type="submit" id="add-btn">
+            <button type="submit" id="add-btn" class="bg-primary-500 hover:bg-primary-600 text-white px-5 rounded-xl hover:-translate-y-1 hover:shadow-lg hover:shadow-primary-500/30 active:scale-95 focus:outline-none focus:ring-4 focus:ring-primary-500/50 transition-all duration-300 flex justify-center items-center">
                 <i class="fas fa-arrow-right"></i>
             </button>
         </form>
 
-        <div class="search-container">
-            <i class="fas fa-search search-icon"></i>
-            <input type="text" id="search-input" placeholder="Buscar entre tus tareas...">
+        <div class="relative mb-6 group">
+            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+            <input type="text" id="search-input" 
+                class="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-700 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500/50 transition-all duration-300 placeholder-slate-400 text-slate-700 dark:text-slate-200"
+                placeholder="Buscar entre tus tareas...">
         </div>
 
-        <div class="stats-bar">
+        <div class="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 mb-4 px-1 font-medium">
             <span id="task-count">0 tareas restantes</span>
-            <button id="clear-all-btn" class="text-btn hide"><i class="fas fa-broom"></i> Limpiar todo</button>
+            <button id="clear-all-btn" class="hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200 hidden flex items-center">
+                <i class="fas fa-broom mr-1"></i> Limpiar todo
+            </button>
         </div>
 
-        <ul id="task-list">
+        <ul id="task-list" class="space-y-3 max-h-[350px] overflow-y-auto pr-2">
             </ul>
     </div>
 
-    <div id="toast-container"></div>
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-3"></div>
 
     <audio id="sound-add" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" preload="auto"></audio>
     <audio id="sound-delete" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3" preload="auto"></audio>

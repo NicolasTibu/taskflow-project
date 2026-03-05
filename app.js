@@ -5,99 +5,123 @@ const taskList = document.getElementById('task-list');
 const taskCount = document.getElementById('task-count');
 const moodIcon = document.getElementById('mood-icon');
 const clearAllBtn = document.getElementById('clear-all-btn');
-const searchInput = document.getElementById('search-input'); // NUEVO: Selección buscador
+const searchInput = document.getElementById('search-input');
 
 // Elementos de Sonido
 const sndAdd = document.getElementById('sound-add');
 const sndDelete = document.getElementById('sound-delete');
 
-// Estado: Array de objetos para manejar 'completado' y texto
-let tasks = JSON.parse(localStorage.getItem('tasks_v2')) || [];
+// --- LÓGICA MODO OSCURO (Punto 4) ---
+const themeToggle = document.getElementById('theme-toggle');
+const themeIcon = document.getElementById('theme-icon');
+const html = document.documentElement;
 
-// --- FUNCIONES AUXILIARES DE INTERACTIVIDAD ---
+// Carga inicial de tema
+if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    html.classList.add('dark');
+    themeIcon.classList.replace('fa-moon', 'fa-sun');
+}
 
-// 1. Guardar y Actualizar Interfaz Completa
+themeToggle.addEventListener('click', () => {
+    html.classList.toggle('dark');
+    const isDark = html.classList.contains('dark');
+    themeIcon.classList.replace(isDark ? 'fa-moon' : 'fa-sun', isDark ? 'fa-sun' : 'fa-moon');
+    localStorage.theme = isDark ? 'dark' : 'light';
+});
+
+// Estado de las tareas
+let tasks = JSON.parse(localStorage.getItem('tasks_tailwind_v3')) || [];
+
+// --- FUNCIONES AUXILIARES ---
+
 function updateUI() {
-    localStorage.setItem('tasks_v2', JSON.stringify(tasks));
+    localStorage.setItem('tasks_tailwind_v3', JSON.stringify(tasks));
     renderTasks();
     updateMood();
 }
 
-// 2. Feedback Sonoro (opcional, necesita interacción previa del usuario)
 function playSound(audioEl) {
-    audioEl.currentTime = 0; // Reinicia para clics rápidos
+    audioEl.currentTime = 0;
     // audioEl.play().catch(()=>{}); // Descomentar para activar sonido
 }
 
-// 3. Cambiar icono de ánimo según carga de trabajo (Feedback visual pasivo)
 function updateMood() {
-    moodIcon.className = ''; // Limpiar clases
+    // Usando clases de Tailwind para el indicador de ánimo
+    moodIcon.className = 'w-6 h-6 rounded-full transition-all duration-500 shadow-md';
     if (tasks.length === 0) {
-        moodIcon.classList.add('mood-neutral');
+        moodIcon.classList.add('bg-slate-400', 'shadow-slate-400/50');
     } else if (tasks.length > 5) {
-        moodIcon.classList.add('mood-busy');
+        moodIcon.classList.add('bg-orange-400', 'shadow-orange-400/50', 'animate-pulse');
     } else {
-        moodIcon.classList.add('mood-happy');
+        moodIcon.classList.add('bg-emerald-400', 'shadow-emerald-400/50');
     }
 
-    // Mostrar/ocultar botón de limpiar todo
+    // Toggle del botón "Limpiar todo"
     if (tasks.length > 1) {
-        clearAllBtn.classList.remove('hide');
+        clearAllBtn.classList.remove('hidden');
     } else {
-        clearAllBtn.classList.add('hide');
+        clearAllBtn.classList.add('hidden');
     }
 }
 
-// 4. Sistema de Notificaciones Toast (Interactividad de Feedback)
+// Toast con Tailwind CSS
 function showToast(message, type = 'success') {
+    const container = document.getElementById('toast-container');
     const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
-    toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-trash'}"></i> ${message}`;
-    document.getElementById('toast-container').appendChild(toast);
     
-    // Eliminar del DOM después de la animación
-    setTimeout(() => toast.remove(), 3000);
+    const colorClass = type === 'success' ? 'border-emerald-500' : 'border-red-500';
+    const icon = type === 'success' ? 'fa-check-circle text-emerald-500' : 'fa-trash-alt text-red-500';
+
+    toast.className = `bg-white dark:bg-slate-800 text-slate-800 dark:text-white px-5 py-3 rounded-xl shadow-2xl border-l-4 ${colorClass} flex items-center gap-3 transform transition-all duration-300 translate-x-full opacity-0`;
+    toast.innerHTML = `<i class="fas ${icon}"></i> <span class="text-sm font-medium">${message}</span>`;
+    
+    container.appendChild(toast);
+
+    // Entrada suave
+    setTimeout(() => toast.classList.remove('translate-x-full', 'opacity-0'), 10);
+
+    // Salida y eliminación
+    setTimeout(() => {
+        toast.classList.add('translate-x-full', 'opacity-0');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
 }
 
+// --- RENDERIZADO (Punto 2 y 5) ---
 
-// --- LÓGICA PRINCIPAL DEL DOM ---
-
-// 5. Renderizado con creación dinámica de nodos
 function renderTasks() {
-    taskList.innerHTML = ''; // Limpiar vista
+    taskList.innerHTML = '';
 
     if (tasks.length === 0) {
-        taskList.innerHTML = `<li class="empty-state"><i class="fas fa-feather"></i><p>Todo limpio. ¡Disfruta tu día!</p></li>`;
-        const es = taskList.querySelector('.empty-state');
-        Object.assign(es.style, {textAlign:'center', color:'var(--text-muted)', paddingTop:'30px', listStyle:'none'});
-        es.querySelector('i').style.fontSize = '2rem';
-        es.querySelector('i').style.marginBottom = '10px';
+        taskList.innerHTML = `
+            <div class="flex flex-col items-center justify-center py-12 text-slate-400 dark:text-slate-600 transition-all">
+                <i class="fas fa-feather text-5xl mb-4 opacity-20"></i>
+                <p class="font-medium">Tu lista está vacía</p>
+            </div>`;
+        taskCount.innerText = "0 tareas restantes";
+        return;
     }
 
     tasks.forEach((task, index) => {
         const li = document.createElement('li');
-        li.className = `task-item ${task.completed ? 'completed' : ''}`;
         li.dataset.index = index;
-
-        const spanText = document.createElement('span');
-        spanText.className = 'task-text';
-        spanText.innerText = task.text;
-
-        const divActions = document.createElement('div');
-        divActions.className = 'action-btns';
-
-        const btnCheck = document.createElement('button');
-        btnCheck.className = 'icon-btn check-btn';
-        btnCheck.innerHTML = '<i class="fas fa-check"></i>';
         
-        const btnDelete = document.createElement('button');
-        btnDelete.className = 'icon-btn delete-btn';
-        btnDelete.innerHTML = '<i class="fas fa-trash-alt"></i>';
+        // Clases de Tailwind para el Item (Bonus: Hovers y transiciones)
+        li.className = `task-item group flex justify-between items-center p-4 bg-white/50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-700 rounded-2xl hover:border-primary-400 dark:hover:border-primary-500 hover:shadow-lg transition-all duration-300 ${task.completed ? 'opacity-50' : ''}`;
 
-        divActions.appendChild(btnCheck);
-        divActions.appendChild(btnDelete);
-        li.appendChild(spanText);
-        li.appendChild(divActions);
+        li.innerHTML = `
+            <span class="task-text flex-1 text-slate-700 dark:text-slate-200 transition-all duration-300 cursor-pointer ${task.completed ? 'line-through opacity-50' : 'font-medium'}">
+                ${task.text}
+            </span>
+            <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <button class="check-btn p-2 hover:bg-emerald-100 dark:hover:bg-emerald-500/10 text-slate-400 hover:text-emerald-500 rounded-lg transition-all">
+                    <i class="fas fa-check"></i>
+                </button>
+                <button class="delete-btn p-2 hover:bg-red-100 dark:hover:bg-red-500/10 text-slate-400 hover:text-red-500 rounded-lg transition-all">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
+        `;
         
         taskList.appendChild(li);
     });
@@ -105,84 +129,64 @@ function renderTasks() {
     taskCount.innerText = `${tasks.filter(t => !t.completed).length} tareas restantes`;
 }
 
+// --- EVENTOS ---
 
-// --- GESTIÓN DE EVENTOS ---
-
-// 6. EVENTO: Añadir Tarea
 taskForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const text = taskInput.value.trim();
-    
     if (text) {
         tasks.push({ text: text, completed: false });
         taskInput.value = '';
-        searchInput.value = ''; // NUEVO: Limpia búsqueda al añadir
+        searchInput.value = '';
         taskInput.focus();
-        
         playSound(sndAdd);
-        showToast('Tarea añadida con éxito');
+        showToast('Tarea añadida');
         updateUI();
     }
 });
 
-// 7. EVENTO: Delegación de Eventos en la Lista
 taskList.addEventListener('click', (e) => {
     const target = e.target;
     const li = target.closest('.task-item');
-    if (!li || li.classList.contains('empty-state')) return;
+    if (!li) return;
     const index = li.dataset.index;
 
-    if (target.closest('.check-btn')) {
+    // Acción Check
+    if (target.closest('.check-btn') || target.classList.contains('task-text')) {
         tasks[index].completed = !tasks[index].completed;
         updateUI();
         return;
     }
 
+    // Acción Eliminar con Animación
     if (target.closest('.delete-btn')) {
         playSound(sndDelete);
-        li.classList.add('fall-out');
-        
-        li.addEventListener('animationend', () => {
+        li.classList.add('scale-95', 'opacity-0', '-translate-x-10');
+        setTimeout(() => {
             tasks.splice(index, 1);
             showToast('Tarea eliminada', 'delete');
             updateUI();
-        });
-        return;
-    }
-    
-    if (target.classList.contains('task-text')) {
-        tasks[index].completed = !tasks[index].completed;
-        updateUI();
+        }, 200);
     }
 });
 
-// 8. EVENTO: Limpiar Todo
 clearAllBtn.addEventListener('click', () => {
-    if(tasks.length > 0 && confirm('¿Seguro que quieres borrar TODAS las tareas?')) {
+    if(tasks.length > 0 && confirm('¿Borrar todas las tareas?')) {
         tasks = [];
-        showToast('Lista limpia', 'delete');
+        showToast('Todo despejado', 'delete');
         updateUI();
     }
 });
 
-// --- NUEVO: LÓGICA FILTRADO DE BÚSQUEDA (BONUS) ---
+// Búsqueda en tiempo real
 searchInput.addEventListener('keyup', () => {
     const term = searchInput.value.toLowerCase().trim();
     const listItems = document.querySelectorAll('.task-item');
 
     listItems.forEach(item => {
-        const textElement = item.querySelector('.task-text');
-        if (textElement) {
-            const text = textElement.innerText.toLowerCase();
-            // Si el texto NO coincide, añadimos la clase 'filtered' (que tiene display:none en CSS)
-            if (text.includes(term)) {
-                item.classList.remove('filtered');
-            } else {
-                item.classList.add('filtered');
-            }
-        }
+        const text = item.querySelector('.task-text').innerText.toLowerCase();
+        item.classList.toggle('filtered', !text.includes(term));
     });
 });
 
-// --- INICIO ---
 document.addEventListener('DOMContentLoaded', updateUI);
