@@ -11,6 +11,8 @@ const emojiPicker = document.getElementById('emoji-picker');
 const prioritySelect = document.getElementById('priority-select');
 const taskDateInput = document.getElementById('task-date');
 const sortSelect = document.getElementById('sort-select');
+const themeToggle = document.getElementById('theme-toggle');
+const themeIcon = document.getElementById('theme-icon');
 
 const sndAdd = document.getElementById('sound-add');
 const sndDelete = document.getElementById('sound-delete');
@@ -305,7 +307,29 @@ searchInput.addEventListener('keyup', () => {
     renderTasks();
 });
 
+// --- Tema claro/oscuro ---
+function aplicarTema(esClaro) {
+    if (esClaro) {
+        document.body.classList.add('theme-light');
+        if (themeIcon) themeIcon.className = 'fas fa-sun';
+        localStorage.setItem('taskflow_theme', 'light');
+    } else {
+        document.body.classList.remove('theme-light');
+        if (themeIcon) themeIcon.className = 'fas fa-moon';
+        localStorage.setItem('taskflow_theme', 'dark');
+    }
+}
+
+if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+        const esClaro = document.body.classList.contains('theme-light');
+        aplicarTema(!esClaro);
+    });
+}
+
 // --- INICIO ---
 document.addEventListener('DOMContentLoaded', () => {
+    const temaGuardado = localStorage.getItem('taskflow_theme');
+    if (temaGuardado === 'light') aplicarTema(true);
     updateUI();
 });
