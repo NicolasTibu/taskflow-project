@@ -14,4 +14,8 @@ No han habido muchos fallos pero por ejemplo tenia que agregar cosas al taskflow
 
 * Riesgos de depender demasiado de la IA.
 
-Riesgos claros son la falta de creatividad, disciplina y en el momento de hacer una página. Reconozco que utilizo la IA pero yo escribo el codigo y no hago copia y pega, por que? Porque si no puedo depender siempre de la IA, hay que hacer la programacion a mano si es posible, la IA es una heramienta para darle un cuerpo a tu codigo, tú lo haces más detallado y mejor estructurado.
+Riesgos claros son la falta de creatividad, disciplina y en el momento de hacer una página. Reconozco que utilizo la IA pero yo escribo el codigo y no hago copia y pega, por que? Porque si no puedo depender siempre de la IA, hay que hacer la programación a mano si es posible, la IA es una heramienta para darle un cuerpo a tu codigo, tú lo haces más detallado y mejor estructurado.
+
+* Cuando quieres programar sin asistencia?
+
+Pues cuando tenga un nivel de programación estable como para ser capaz de hacer una página, por ahora dependo de la IA pero me gustaría depender de ella lo menos posible.
