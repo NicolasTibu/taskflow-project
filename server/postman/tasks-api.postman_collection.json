@@ -1,0 +1,138 @@
+{
+  "info": {
+    "name": "Tasks API - Pruebas de integración",
+    "description": "Colección para probar el API de tareas. Incluye casos exitosos y casos que fuerzan errores intencionados.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" }
+  ],
+  "item": [
+    {
+      "name": "Casos exitosos",
+      "item": [
+        {
+          "name": "GET todas las tareas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/tasks",
+            "description": "Obtiene todas las tareas. Esperado: 200 OK con array de tareas."
+          }
+        },
+        {
+          "name": "POST crear tarea válida",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Mi primera tarea\",\n  \"completed\": false\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/tasks",
+            "description": "Crea una tarea con título y completed válidos. Esperado: 201 Created con la tarea creada."
+          }
+        },
+        {
+          "name": "PATCH actualizar tarea",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"completed\": true\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/tasks/1",
+            "description": "Actualiza la tarea con id 1 (ej. marcar completada). Esperado: 200 OK con la tarea actualizada."
+          }
+        },
+        {
+          "name": "DELETE tarea existente",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/tasks/1",
+            "description": "Elimina la tarea con id 1 (debe existir). Esperado: 204 No Content."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Errores intencionados",
+      "item": [
+        {
+          "name": "POST sin título → 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"completed\": true\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/tasks",
+            "description": "Envía POST sin el campo 'title'. El servidor debe responder 400 Bad Request con error INVALID_TITLE."
+          }
+        },
+        {
+          "name": "POST con título vacío → 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"   \",\n  \"completed\": false\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/tasks",
+            "description": "Envía POST con título solo de espacios. Esperado: 400 Bad Request."
+          }
+        },
+        {
+          "name": "POST con completed no booleano → 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Tarea válida\",\n  \"completed\": \"true\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/tasks",
+            "description": "Envía 'completed' como string en vez de boolean. Esperado: 400 Bad Request con error INVALID_COMPLETED."
+          }
+        },
+        {
+          "name": "DELETE tarea inexistente → 404",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/tasks/99999",
+            "description": "Intenta eliminar una tarea con ID que no existe. El servidor debe responder 404 Not Found."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health check",
+      "item": [
+        {
+          "name": "GET health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/health",
+            "description": "Verifica que el servidor esté en marcha. Esperado: 200 OK con { ok: true }."
+          }
+        }
+      ]
+    }
+  ]
+}
