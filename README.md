@@ -50,7 +50,7 @@
 ### Experiencia de usuario
 | Función | Descripción |
 |--------|-------------|
-| 🌓 **Tema claro/oscuro** | Cambio de tema con persistencia en `localStorage` |
+| 🌓 **Tema claro/oscuro** | Cambio de tema en sesión |
 | 😊 **Indicador de ánimo** | Feedback visual según carga de tareas |
 | 🔊 **Sonidos** | Feedback sonoro al añadir y eliminar |
 | 📱 **Responsivo** | Adaptado a distintos tamaños de pantalla |
@@ -61,23 +61,28 @@
 
 - **HTML5** — Estructura semántica
 - **CSS3** — Flexbox, variables CSS, animaciones, glassmorphism
-- **JavaScript (ES6+)** — DOM, eventos, `localStorage`
+- **JavaScript (ES6+)** — Módulos, `fetch`, DOM, eventos
 - **Font Awesome** — Iconos
+- **Node.js + Express** — API REST en `server/` (ver [server/README.md](server/README.md))
 
 ---
 
 ## 🚀 Cómo ejecutarlo
 
-### Opción 1: Navegador
-1. Clona el repositorio: `git clone [url-del-repo]`
-2. Abre `index.html` en tu navegador.
+### 1. Arrancar el servidor (API)
+```bash
+cd server
+npm install
+npm run dev
+```
+El API escucha en `http://localhost:3000`.
 
-### Opción 2: Live Server (VSCode)
-1. Instala la extensión *Live Server*.
-2. Clic derecho en `index.html` → *Open with Live Server*.
+### 2. Abrir el frontend
+- Con **Live Server** (VSCode): clic derecho en `index.html` → *Open with Live Server*.
+- O abre `index.html` directamente en el navegador (nota: CORS puede requerir servidor).
 
 ### Despliegue
-Proyecto desplegable en **Vercel**, **Netlify** o **GitHub Pages**.
+Frontend en **Vercel**, **Netlify** o **GitHub Pages**. Backend por separado (Railway, Render, etc.).
 
 ---
 
@@ -85,10 +90,16 @@ Proyecto desplegable en **Vercel**, **Netlify** o **GitHub Pages**.
 
 ```
 Corner Studios/
-├── index.html      # TaskFlow Pro — app principal
-├── style.css       # Estilos (tema oscuro/claro)
-├── app.js          # Lógica de la aplicación
-├── Experimento.html # Mini proyectos de práctica
+├── index.html       # TaskFlow Pro — app principal
+├── style.css        # Estilos (tema oscuro/claro)
+├── app.js           # Lógica y consumo de API
+├── src/
+│   └── api/
+│       └── client.js   # Cliente HTTP (fetch) para la API
+├── server/          # API REST Node.js (ver server/README.md)
+├── docs/
+│   └── backend-api.md # Axios, Postman, Sentry, Swagger
+├── Experimento.html
 └── README.md
 ```
 
